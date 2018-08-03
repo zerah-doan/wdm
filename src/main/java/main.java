@@ -51,7 +51,7 @@ public class main {
     @Test
     public void testRemote() throws MalformedURLException {
         WDManager.setWD(WDFactory.remote(new URL("http://localhost:4444/wd/hub"), DesiredCapabilities.chrome()));
-        WDManager.getWD().get("https://youtube.com");
+        WDManager.getWD().get("https://yahoo.com");
         System.out.println(WDManager.getWD().getTitle());
         WDManager.getWD().findElement(By.xpath("//a")).click();
         WDManager.getWD().findElement(By.xpath("//a")).click();
