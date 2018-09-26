@@ -38,7 +38,10 @@ public final class ResultSenderUtil {
             release = JsonPath.read(resObj, "$.hits.hits[0]._source.release");
             cycle = JsonPath.read(resObj, "$.hits.hits[0]._source.cycle");
             isEnable = JsonPath.read(resObj, "$.hits.hits[0]._source.isEnable");
-        } catch (UnirestException e) {
+        } catch (Exception e) {
+            release = "";
+            cycle = "";
+            isEnable = false;
         }
     }
 

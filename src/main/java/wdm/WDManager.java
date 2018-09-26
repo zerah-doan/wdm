@@ -1,6 +1,7 @@
 package wdm;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * Manage WD instances
@@ -11,6 +12,7 @@ public class WDManager {
      * ThreadLocal helps manage WD instances among threads
      */
     private static ThreadLocal<WebDriver> manager = new ThreadLocal<>();
+    private static ThreadLocal<WebDriverWait> wait = new ThreadLocal<>();
 
     /**
      * Get WD in current thread
@@ -21,6 +23,9 @@ public class WDManager {
         return manager.get();
     }
 
+    public static WebDriverWait getWait() {
+        return wait.get();
+    }
 
     /**
      * Set WD to current thread
@@ -32,6 +37,7 @@ public class WDManager {
             dismissWD();
         }
         manager.set(driver);
+        wait.set(new WebDriverWait(manager.get(), 20));
     }
 
     /**

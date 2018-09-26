@@ -2,10 +2,10 @@ import io.github.bonigarcia.wdm.Architecture;
 import org.openqa.selenium.By;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+import report.api.ExecutionListener;
 import wdm.Browser;
 import wdm.WDFactory;
 import wdm.WDManager;
@@ -13,22 +13,11 @@ import wdm.WDManager;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class main {
-//    public static void main(String[] args) {
-//        WDFactory.getConfig().setArchitecture(Architecture.X32);
-//        WDFactory.getConfig().setDriverVersion("3.12.0");
-//        WebDriver wd = WDFactory.initBrowser(Browser.IE);
-//        wd.get("https://github.com/bonigarcia/webdrivermanager");
-//        wd.quit();
-//    }
-
-    WebDriverWait wait;
+@Listeners(ExecutionListener.class)
+public class SampleTest {
 
     public void waitForElement(By by) {
-        if (wait == null) {
-            wait = new WebDriverWait(WDManager.getWD(), 20);
-        }
-        wait.until(ExpectedConditions.elementToBeClickable(by));
+        WDManager.getWait().until(ExpectedConditions.elementToBeClickable(by));
     }
 
     public void type(By by, String txt) {
@@ -41,7 +30,7 @@ public class main {
         WDManager.getWD().findElement(by).click();
     }
 
-    @Test
+    @Test(description = "Test Google")
     public void testGoogle() {
         WDFactory.getConfig().setArchitecture(Architecture.X32);
         WDManager.setWD(WDFactory.initBrowser(Browser.IE));
@@ -52,7 +41,7 @@ public class main {
         click(By.xpath("//a[text() = 'Video']"));
     }
 
-    @Test
+    @Test(description = "Test Facebook")
     public void testFacebook() {
         WDManager.setWD(WDFactory.initBrowser(Browser.CHROME));
         WDManager.getWD().get("https://facebook.com");
@@ -65,7 +54,7 @@ public class main {
 
     }
 
-    @Test
+    @Test(description = "Test Youtube")
     public void testYoutube() {
         WDManager.setWD(WDFactory.initBrowser(Browser.FIREFOX));
         WDManager.getWD().get("https://youtube.com");
@@ -75,24 +64,24 @@ public class main {
         click(By.cssSelector("a#video-title"));
     }
 
-    @Test
+    @Test(description = "Test remote 1")
     public void testRemote() throws MalformedURLException {
         WDManager.setWD(WDFactory.remote(new URL("http://localhost:4444/wd/hub"), DesiredCapabilities.chrome()));
-        WDManager.getWD().get("https://yahoo.com");
+        WDManager.getWD().get("https://youtube.com");
         System.out.println(WDManager.getWD().getTitle());
-        WDManager.getWD().findElement(By.xpath("//a")).click();
-        WDManager.getWD().findElement(By.xpath("//a")).click();
-        WDManager.getWD().findElement(By.xpath("//a")).click();
+        type(By.id("search"), "aaaaaa");
+        click(By.id("search-icon-legacy"));
+        click(By.cssSelector("a#video-title"));
     }
 
-    @Test
+    @Test(description = "Test remote 2")
     public void testRemote2() throws MalformedURLException {
         WDManager.setWD(WDFactory.remote(new URL("http://localhost:4444/wd/hub"), DesiredCapabilities.chrome()));
-        WDManager.getWD().get("https://yahoo.com");
+        WDManager.getWD().get("https://youtube.com");
         System.out.println(WDManager.getWD().getTitle());
-        WDManager.getWD().findElement(By.xpath("//a")).click();
-        WDManager.getWD().findElement(By.xpath("//a")).click();
-        WDManager.getWD().findElement(By.xpath("//a")).click();
+        type(By.id("search"), "aaaaaa");
+        click(By.id("search-icon-legacy"));
+        click(By.cssSelector("a#video-title"));
     }
 
     @AfterMethod

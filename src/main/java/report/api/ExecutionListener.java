@@ -9,10 +9,10 @@ import org.testng.ITestResult;
 import java.util.concurrent.TimeUnit;
 
 public class ExecutionListener implements ITestListener {
-    private TestResult result;
+    private static ThreadLocal<TestResult> resultThread = new ThreadLocal<>();
 
     public void onTestStart(final ITestResult iTestResult) {
-        result = new TestResult();
+        resultThread.set(new TestResult());
     }
 
     public void onTestSuccess(final ITestResult iTestResult) {
@@ -41,21 +41,21 @@ public class ExecutionListener implements ITestListener {
 
 
     private void setTestDataOnTestEnd(final ITestResult itr, final Status stt) {
-        result.setTestName(itr.getMethod().getDescription());
-        result.setGroups(itr.getMethod().getGroups());
-        result.setStatus(stt);
-        result.setExecutedBy(System.getProperty("user.name"));
+        resultThread.get().setTestName(itr.getMethod().getDescription());
+        resultThread.get().setGroups(itr.getMethod().getGroups());
+        resultThread.get().setStatus(stt);
+        resultThread.get().setExecutedBy(System.getProperty("user.name"));
         setTestDuration(itr);
         if (stt != Status.PASS) {
-            result.setErrorMsg(itr.getThrowable().toString());
+            resultThread.get().setErrorMsg(itr.getThrowable().toString());
         }
-        result.setExecutionDate(ISODateTimeFormat.dateTime().print(DateTime.now()));
-        ResultSenderUtil.sendTestResult(result);
+        resultThread.get().setExecutionDate(ISODateTimeFormat.dateTime().print(DateTime.now()));
+        ResultSenderUtil.sendTestResult(resultThread.get());
     }
 
     private void setTestDuration(final ITestResult itr) {
         final long durInMillis = itr.getEndMillis() - itr.getStartMillis();
-        result.setDuration(String.format("%d min %d sec",
+        resultThread.get().setDuration(String.format("%d min %d sec",
                 TimeUnit.MILLISECONDS.toMinutes(durInMillis),
                 TimeUnit.MILLISECONDS.toSeconds(durInMillis) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(durInMillis))));
